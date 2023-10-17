@@ -1,0 +1,4 @@
+To build src:
+
+
+cl65 main.s --verbose --target nes -o bin/main.nes
