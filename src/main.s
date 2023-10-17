@@ -136,23 +136,19 @@ load_sprites:
 	bne load_floor
 
 
-
-	; finally, attribute table
-	LDA PPUSTATUS
-	LDA #$23
-	STA PPUADDR
-	LDA #$c2
-	STA PPUADDR
-	LDA #%00000000
-	STA PPUDATA
-
-	LDA PPUSTATUS
-	LDA #$23
-	STA PPUADDR
-	LDA #$e0
-	STA PPUADDR
-	LDA #%00001100
-	STA PPUDATA
+	LDY #$e8
+; Set every 2x2 block in the attribute table to use the second palette
+loop_attTable:
+  LDA PPUSTATUS
+  LDA #$23   
+  STA PPUADDR
+  TYA
+  STA PPUADDR
+  LDA #%01010101
+  STA PPUDATA
+  CPY #$ef
+  INY
+  BNE loop_attTable
 
 vblankwait:       ; wait for another vblank before continuing
   BIT PPUSTATUS
@@ -173,7 +169,7 @@ forever:
 .segment "RODATA"
 palettes:
 .byte $0f, $30, $15, $2a
-.byte $0f, $2b, $3c, $39
+.byte $0f, $2a, $17, $38
 .byte $0f, $0c, $07, $13
 .byte $0f, $19, $09, $29
 
