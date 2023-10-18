@@ -62,14 +62,23 @@ load_palettes:
   CPX #$20
   BNE load_palettes
 
+
+
+
   ; write sprite data
   LDX #$00
 load_sprites:
   LDA sprites,X
   STA $0200,X
   INX
-  CPX #$10
+  CPX #$18
   BNE load_sprites
+
+
+
+
+
+
 
 	; write nametables
 	; LOAD BIG GREEN STARS -----------------------------------------------------
@@ -797,15 +806,17 @@ palettes:
 .byte $0f, $19, $09, $29
 
 .byte $0f, $30, $15, $2a
-.byte $0f, $19, $09, $29
+.byte $0f, $24, $11, $30
 .byte $0f, $19, $09, $29
 .byte $0f, $19, $09, $29
 
 sprites:
-; .byte $70, $05, $00, $80
-; .byte $70, $06, $00, $88
-; .byte $78, $07, $00, $80
-; .byte $78, $08, $00, $88
+.byte $70, $35, $01, $80
+.byte $70, $36, $01, $88
+.byte $78, $45, $01, $80
+.byte $78, $46, $01, $88
+.byte $80, $55, $01, $80
+.byte $80, $56, $01, $88
 
 .segment "CHARS"
 .incbin "graphics.chr"
