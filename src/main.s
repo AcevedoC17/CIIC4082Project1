@@ -72,7 +72,7 @@ load_sprites:
   BNE load_sprites
 
 	; write nametables
-	; big stars first
+	; LOAD BIG GREEN STARS -----------------------------------------------------
 	LDA PPUSTATUS
 	LDA #$20
 	STA PPUADDR
@@ -121,7 +121,7 @@ load_sprites:
 	LDX #$1e
 	STX PPUDATA
 
-	; ---- pink stars ----
+	; ---- LOAD SMALL PINK STARS ------------------
 
 	LDA PPUSTATUS
 	LDA #$20
@@ -172,7 +172,7 @@ load_sprites:
 	STX PPUDATA
 
 
-	; ------- white stars
+	; ------- LOAD WHITE SMALL STARS ----------------------
 
 	LDA PPUSTATUS
 	LDA #$20
@@ -443,7 +443,7 @@ load_sprites:
 
 
 
-; ------------------------------ LOAD FLOOR LOOP
+; ------------------------------ LOAD FLOOR LOOP -----------------------------
 	LDY #$c0
 	LDX #$40
 	load_floor:
@@ -460,7 +460,7 @@ load_sprites:
 
 	
 
-; ------------------------------- LOAD BELOW GROUND
+; ------------------------------- LOAD BELOW GROUND ---------------------------
 	LDY #$e0 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -474,7 +474,7 @@ load_sprites:
 	cpy #$ff ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND ------------------------
 	LDY #$00 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -488,7 +488,7 @@ load_sprites:
 	cpy #$1f ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND --------------------------
 	LDY #$20 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -502,7 +502,7 @@ load_sprites:
 	cpy #$3f ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND --------------------------
 	LDY #$40 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -516,7 +516,7 @@ load_sprites:
 	cpy #$5f ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND -------------------------
 	LDY #$60 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -530,7 +530,7 @@ load_sprites:
 	cpy #$7f ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND ------------------------
 	LDY #$80 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -544,7 +544,7 @@ load_sprites:
 	cpy #$9f ; End of row
 	bne :-
 
-	; ------------------------------- LOAD BELOW GROUND
+	; ------------------------------- LOAD BELOW GROUND ------------------------
 	LDY #$a0 ; Start of row
 	LDX #$41 ; Tile ID
 	:
@@ -558,7 +558,174 @@ load_sprites:
 	cpy #$bf ; End of row
 	bne :-
 
-	; ------------------------------- LOAD PLATFORM
+
+	; ------------------------------ LOAD STAR CLUSTER ---------------------
+
+	LDA PPUSTATUS
+	LDA #$20
+	STA PPUADDR
+	LDA #$0a
+	STA PPUADDR
+	LDX #$1c
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$20
+	STA PPUADDR
+	LDA #$38
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$20
+	STA PPUADDR
+	LDA #$5b
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$20
+	STA PPUADDR
+	LDA #$84
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$20
+	STA PPUADDR
+	LDA #$c8
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$21
+	STA PPUADDR
+	LDA #$2e
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$21
+	STA PPUADDR
+	LDA #$ac
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$21
+	STA PPUADDR
+	LDA #$e6
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$21
+	STA PPUADDR
+	LDA #$fd
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$21
+	STA PPUADDR
+	LDA #$3a
+	STA PPUADDR
+	STX PPUDATA
+
+
+	; ----------------- LOADD YELLOW STARS -------------
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$00
+	STA PPUADDR
+	LDX #$21
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$02
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$34
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$37
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$62
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$44
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$67
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$4b
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$51
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$7b
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$5f
+	STA PPUADDR
+	STX PPUDATA
+
+	LDA PPUSTATUS
+	LDA #$22
+	STA PPUADDR
+	LDA #$bd
+	STA PPUADDR
+	STX PPUDATA
+
+	
+	
+
+
+
+	; ------------------------------- LOAD PLATFORM ---------------------
 	LDA PPUSTATUS
 	LDA #$22
 	STA PPUADDR

@@ -1,4 +1,9 @@
 To build src:
 
-
+cd src
 cl65 main.s --verbose --target nes -o bin/main.nes
+
+Then run .nes file located in bin folder using FCEUX
+
+
+FCEUX bug known: If booted in new PPU mode, it will not work. FCEUX must be booted in old PPU mode then switched to new PPU in order to work.
