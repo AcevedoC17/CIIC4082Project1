@@ -136,8 +136,111 @@ load_sprites:
 	bne load_floor
 
 
-	LDY #$e8
+	
+
+; ------------------------------- LOAD BELOW GROUND
+	LDY #$e0 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$22 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$ff ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$00 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$1f ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$20 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$3f ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$40 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$5f ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$60 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$7f ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$80 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$9f ; End of row
+	bne :-
+
+	; ------------------------------- LOAD BELOW GROUND
+	LDY #$a0 ; Start of row
+	LDX #$41 ; Tile ID
+	:
+	LDA PPUSTATUS
+	LDA #$23 ; 2200
+	STA PPUADDR
+	TYA
+	INY
+	STA PPUADDR
+	STX PPUDATA
+	cpy #$bf ; End of row
+	bne :-
+
+
+
+
 ; Set every 2x2 block in the attribute table to use the second palette
+LDY #$e8
 loop_attTable:
   LDA PPUSTATUS
   LDA #$23   
