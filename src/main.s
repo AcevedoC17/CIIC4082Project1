@@ -71,7 +71,7 @@ load_sprites:
   LDA sprites,X
   STA $0200,X
   INX
-  CPX #$18
+  CPX #$96
   BNE load_sprites
 
 
@@ -811,12 +811,58 @@ palettes:
 .byte $0f, $19, $09, $29
 
 sprites:
-.byte $70, $35, $01, $80 ;// Satrina body. If adding more remember to update cpx value in load_sprites
-.byte $70, $36, $01, $88
-.byte $78, $45, $01, $80
-.byte $78, $46, $01, $88
-.byte $80, $55, $01, $80
-.byte $80, $56, $01, $88
+.byte $70, $02, $01, $80 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $03, $01, $88
+.byte $78, $12, $01, $80
+.byte $78, $13, $01, $88
+.byte $80, $22, $01, $80
+.byte $80, $23, $01, $88
+
+; TO the left, Satrina first running sprite
+.byte $70, $02, $01, $70 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $03, $01, $78  
+.byte $78, $12, $01, $70
+.byte $78, $13, $01, $78
+.byte $80, $24, $01, $70
+.byte $80, $23, $01, $78
+
+; To the right, Satrina last running sprite
+.byte $70, $02, $01, $90 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $03, $01, $98  
+.byte $78, $12, $01, $90
+.byte $78, $13, $01, $98
+.byte $80, $22, $01, $90
+.byte $80, $25, $01, $98
+
+; To the right right DEATH SPRITE
+.byte $70, $02, $01, $a0 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $03, $01, $a8
+.byte $78, $04, $01, $a0 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $78, $05, $01, $a8
+
+
+; JUMPING SPRITE
+.byte $80, $02, $01, $b0 	;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $80, $03, $01, $b8  
+.byte $88, $12, $01, $b0
+.byte $88, $13, $01, $b8
+.byte $90, $24, $01, $b0
+.byte $90, $25, $01, $b8
+
+
+; IDLE SRITE
+
+.byte $52, $02, $01, $5a
+.byte $52, $03, $01, $62
+.byte $5a, $14, $01, $5a
+.byte $5a, $15, $01, $62
+.byte $62, $22, $01, $5a
+.byte $62, $23, $01, $62
+
+
+
+
+
 
 .segment "CHARS"
 .incbin "graphics.chr"
