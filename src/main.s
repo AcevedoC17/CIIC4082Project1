@@ -811,7 +811,7 @@ palettes:
 .byte $0f, $19, $09, $29
 
 sprites:
-.byte $70, $35, $01, $80
+.byte $70, $35, $01, $80 ;// Satrina body. If adding more remember to update cpx value in load_sprites
 .byte $70, $36, $01, $88
 .byte $78, $45, $01, $80
 .byte $78, $46, $01, $88
