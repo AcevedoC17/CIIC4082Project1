@@ -71,7 +71,7 @@ load_sprites:
   LDA sprites,X
   STA $0200,X
   INX
-  CPX #$96
+  CPX #$ff
   BNE load_sprites
 
 
@@ -811,7 +811,7 @@ palettes:
 .byte $0f, $19, $09, $29
 
 sprites:
-.byte $70, $02, $01, $80 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $02, $01, $80 ; Satrina body (middle running sprite)
 .byte $70, $03, $01, $88
 .byte $78, $12, $01, $80
 .byte $78, $13, $01, $88
@@ -819,7 +819,7 @@ sprites:
 .byte $80, $23, $01, $88
 
 ; TO the left, Satrina first running sprite
-.byte $70, $02, $01, $70 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $02, $01, $70 
 .byte $70, $03, $01, $78  
 .byte $78, $12, $01, $70
 .byte $78, $13, $01, $78
@@ -827,7 +827,7 @@ sprites:
 .byte $80, $23, $01, $78
 
 ; To the right, Satrina last running sprite
-.byte $70, $02, $01, $90 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $02, $01, $90 
 .byte $70, $03, $01, $98  
 .byte $78, $12, $01, $90
 .byte $78, $13, $01, $98
@@ -835,14 +835,14 @@ sprites:
 .byte $80, $25, $01, $98
 
 ; To the right right DEATH SPRITE
-.byte $70, $02, $01, $a0 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $70, $02, $01, $a0 
 .byte $70, $03, $01, $a8
-.byte $78, $04, $01, $a0 ;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $78, $04, $01, $a0 
 .byte $78, $05, $01, $a8
 
 
 ; JUMPING SPRITE
-.byte $80, $02, $01, $b0 	;// Satrina body. If adding more remember to update cpx value in load_sprites
+.byte $80, $02, $01, $b0 	
 .byte $80, $03, $01, $b8  
 .byte $88, $12, $01, $b0
 .byte $88, $13, $01, $b8
@@ -858,6 +858,50 @@ sprites:
 .byte $5a, $15, $01, $62
 .byte $62, $22, $01, $5a
 .byte $62, $23, $01, $62
+
+
+; ------- FLIPPED SPRITES ------------
+
+.byte $2c, $02, $41, $88 ; Satrina body (middle running sprite)
+.byte $2c, $03, $41, $80
+.byte $34, $12, $41, $88
+.byte $34, $13, $41, $80
+.byte $3c, $22, $41, $88
+.byte $3c, $23, $41, $80
+
+.byte $2c, $02, $41, $78 ; Satrina first running sprite
+.byte $2c, $03, $41, $70
+.byte $34, $12, $41, $78
+.byte $34, $13, $41, $70
+.byte $3c, $24, $41, $78
+.byte $3c, $23, $41, $70
+
+.byte $2c, $02, $41, $98 ; Satrina last running sprite
+.byte $2c, $03, $41, $90  
+.byte $34, $12, $41, $98
+.byte $34, $13, $41, $90
+.byte $3c, $22, $41, $98
+.byte $3c, $25, $41, $90
+
+; JUMPING SPRITE
+.byte $2c, $02, $41, $b8	
+.byte $2c, $03, $41, $b0  
+.byte $34, $12, $41, $b8
+.byte $34, $13, $41, $b0
+.byte $3c, $24, $41, $b8
+.byte $3c, $25, $41, $b0
+
+; IDLE SRITE
+
+.byte $0c, $02, $41, $62
+.byte $0c, $03, $41, $5a
+.byte $14, $14, $41, $62
+.byte $14, $15, $41, $5a ; ff
+.byte $1c, $22, $41, $62
+.byte $1c, $23, $41, $5a
+
+
+
 
 
 
