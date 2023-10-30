@@ -8,9 +8,22 @@
 
 .segment "STARTUP"
 
+
+
+
+
+
+
 .proc nmi_handler
   LDA #$00
   STA OAMADDR
+
+
+
+  JSR AnimationPlayer
+
+
+
   LDA #$02
   STA OAMDMA
 	LDA #$00
@@ -49,6 +62,13 @@ vblankwait2:
 
 .export main
 .proc main
+	; Initialize values in ZEROPAGE
+
+	LDA #$00
+	STA animCount
+	LDA #$00
+	STA animDelay
+
   ; write a palette
   LDX PPUSTATUS
   LDX #$3f
@@ -766,9 +786,7 @@ load_sprites:
 
 
 
-
-
-; Set every 2x2 block in the attribute table to use the second palette
+;Set every 2x2 block in the attribute table to use the second palette
 LDY #$e8
 loop_attTable:
   LDA PPUSTATUS
@@ -791,10 +809,143 @@ vblankwait:       ; wait for another vblank before continuing
   LDA #%00011110  ; turn on screen
   STA PPUMASK
 
+LDA #$70
+	STA $0200
+	LDA #$02
+	STA $0201
+	LDA #$01
+	STA $0202
+	LDA #$80
+	STA $0203
+
+	LDA #$70
+	STA $0204
+	LDA #$03
+	STA $0205
+	LDA #$01
+	STA $0206
+	LDA #$88
+	STA $0207
+
+	LDA #$78
+	STA $0208
+	LDA#$12
+	STA $0209
+	LDA #$01
+	STA $020a
+	LDA #$80
+	STA $020b
+
+	LDA #$78
+	STA $020c
+	LDA #$13
+	STA $020d
+	LDA #$01
+	STA $020e
+	LDA #$88
+	STA $020f
+
+	LDA #$80
+	STA $0210
+	LDA #$24 ; LEFT FOOT RUN
+	STA $0211
+	LDA #$01
+	STA $0212
+	LDA #$80
+	STA $0213
+
+	LDA #$80
+	STA $0214
+	LDA #$23 ; RIGHT FOOT IDLE
+	STA $0215
+	LDA #$01
+	STA $0216
+	LDA #$88
+	STA $0217
+JSR AnimationPlayer
+
 forever:
   JMP forever
 .endproc
+.proc AnimationPlayer
+	PHP
+	PHA
+	TXA
+	PHA
+	TYA
+	PHA
+	
 
+; .byte $70, $02, $01, $80 ; Satrina body (middle running sprite)
+; .byte $70, $03, $01, $88
+; .byte $78, $12, $01, $80
+; .byte $78, $13, $01, $88 
+; .byte $80, $22, $01, $80
+; .byte $80, $23, $01, $88
+
+; Middle running sprite
+
+	
+	LDX animDelay
+	cpx #$0f  ; Delay between frames
+	beq executeAnim 
+	INX
+	STX animDelay
+	jmp end
+
+
+executeAnim:
+	LDA #$01
+	STA $0202
+	STA $0206
+	STA $020a
+	STA $020e
+	LDX #$00
+	STX animDelay
+	LDX animCount
+	cpx #$00
+	beq RunFirstStage
+	cpx #$01 
+	beq RunIdleStage
+	cpx #$02
+	beq RunFinalStage
+
+
+RunFirstStage:
+	LDA #$24
+	STA $0211
+	LDA #$23
+	STA $0215
+	LDX #$01
+	STX animCount
+	JMP end
+
+RunIdleStage:
+	LDA #$22
+	STA $0211
+	LDA #$23
+	STA $0215
+	LDX #$02
+	STX animCount
+	JMP end
+	
+RunFinalStage:
+	LDA #$22
+	STA $0211
+	LDA #$25
+	STA $0215
+	LDX #$00
+	STX animCount
+	JMP end
+end:
+	PLA
+	TAY
+	PLA
+	TAX
+	PLA
+	PLP
+	RTS
+.endproc
 .segment "VECTORS"
 .addr nmi_handler, reset_handler, irq_handler
 
@@ -811,102 +962,16 @@ palettes:
 .byte $0f, $19, $09, $29
 
 sprites:
-.byte $70, $02, $01, $80 ; Satrina body (middle running sprite)
-.byte $70, $03, $01, $88
-.byte $78, $12, $01, $80
-.byte $78, $13, $01, $88
-.byte $80, $22, $01, $80
-.byte $80, $23, $01, $88
-
-; TO the left, Satrina first running sprite
-.byte $70, $02, $01, $70 
-.byte $70, $03, $01, $78  
-.byte $78, $12, $01, $70
-.byte $78, $13, $01, $78
-.byte $80, $24, $01, $70
-.byte $80, $23, $01, $78
-
-; To the right, Satrina last running sprite
-.byte $70, $02, $01, $90 
-.byte $70, $03, $01, $98  
-.byte $78, $12, $01, $90
-.byte $78, $13, $01, $98
-.byte $80, $22, $01, $90
-.byte $80, $25, $01, $98
-
-; To the right right DEATH SPRITE
-.byte $70, $02, $01, $a0 
-.byte $70, $03, $01, $a8
-.byte $78, $04, $01, $a0 
-.byte $78, $05, $01, $a8
-
-
-; JUMPING SPRITE
-.byte $80, $02, $01, $b0 	
-.byte $80, $03, $01, $b8  
-.byte $88, $12, $01, $b0
-.byte $88, $13, $01, $b8
-.byte $90, $24, $01, $b0
-.byte $90, $25, $01, $b8
-
-
-; IDLE SRITE
-
-.byte $52, $02, $01, $5a
-.byte $52, $03, $01, $62
-.byte $5a, $14, $01, $5a
-.byte $5a, $15, $01, $62
-.byte $62, $22, $01, $5a
-.byte $62, $23, $01, $62
-
-
-; ------- FLIPPED SPRITES ------------
-
-.byte $2c, $02, $41, $88 ; Satrina body (middle running sprite)
-.byte $2c, $03, $41, $80
-.byte $34, $12, $41, $88
-.byte $34, $13, $41, $80
-.byte $3c, $22, $41, $88
-.byte $3c, $23, $41, $80
-
-.byte $2c, $02, $41, $78 ; Satrina first running sprite
-.byte $2c, $03, $41, $70
-.byte $34, $12, $41, $78
-.byte $34, $13, $41, $70
-.byte $3c, $24, $41, $78
-.byte $3c, $23, $41, $70
-
-.byte $2c, $02, $41, $98 ; Satrina last running sprite
-.byte $2c, $03, $41, $90  
-.byte $34, $12, $41, $98
-.byte $34, $13, $41, $90
-.byte $3c, $22, $41, $98
-.byte $3c, $25, $41, $90
-
-; JUMPING SPRITE
-.byte $2c, $02, $41, $b8	
-.byte $2c, $03, $41, $b0  
-.byte $34, $12, $41, $b8
-.byte $34, $13, $41, $b0
-.byte $3c, $24, $41, $b8
-.byte $3c, $25, $41, $b0
-
-; IDLE SRITE
-
-.byte $0c, $02, $41, $62
-.byte $0c, $03, $41, $5a
-.byte $14, $14, $41, $62
-.byte $14, $15, $41, $5a ; ff
-.byte $1c, $22, $41, $62
-.byte $1c, $23, $41, $5a
-
-
-
-
-
-
-
-
-
+; .byte $70, $02, $01, $80 ; Satrina body (middle running sprite)
+; .byte $70, $03, $01, $88
+; .byte $78, $12, $01, $80
+; .byte $78, $13, $01, $88 
+; .byte $80, $22, $01, $80
+; .byte $80, $23, $01, $88
 .segment "CHARS"
 .incbin "graphics.chr"
+
+
+.segment "ZEROPAGE"
+animCount: .res 1
+animDelay: .res 1
