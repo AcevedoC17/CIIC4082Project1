@@ -21,6 +21,7 @@
 
 
   JSR AnimationPlayer
+  JSR update
 
 
 
@@ -62,12 +63,16 @@ vblankwait2:
 
 .export main
 .proc main
-	; Initialize values in ZEROPAGE
+	; Initialize values in ZEROPAGE // MARK: ZPInit
 
 	LDA #$00
 	STA animCount
 	LDA #$00
 	STA animDelay
+	LDA #$08
+	STA satrina_x
+	LDA #$01
+	STA satrina_dir
 
   ; write a palette
   LDX PPUSTATUS
@@ -809,14 +814,14 @@ vblankwait:       ; wait for another vblank before continuing
   LDA #%00011110  ; turn on screen
   STA PPUMASK
 
-LDA #$70
+	LDA #$70
 	STA $0200
 	LDA #$02
 	STA $0201
 	LDA #$01
 	STA $0202
-	LDA #$80
-	STA $0203
+	LDA satrina_x
+	STA $0203 ; X Location LEFT HEAD
 
 	LDA #$70
 	STA $0204
@@ -824,8 +829,10 @@ LDA #$70
 	STA $0205
 	LDA #$01
 	STA $0206
-	LDA #$88
-	STA $0207
+	LDA satrina_x ; X
+	CLC
+	ADC #$08
+	STA $0207 ; X Location RIGHT HEAD
 
 	LDA #$78
 	STA $0208
@@ -833,8 +840,8 @@ LDA #$70
 	STA $0209
 	LDA #$01
 	STA $020a
-	LDA #$80
-	STA $020b
+	LDA satrina_x ; X
+	STA $020b ; X Location LEFT BODY
 
 	LDA #$78
 	STA $020c
@@ -842,8 +849,10 @@ LDA #$70
 	STA $020d
 	LDA #$01
 	STA $020e
-	LDA #$88
-	STA $020f
+	LDA satrina_x ; X
+	CLC
+	ADC #$08 ; X
+	STA $020f ; X Location RIGHT BODY
 
 	LDA #$80
 	STA $0210
@@ -851,8 +860,8 @@ LDA #$70
 	STA $0211
 	LDA #$01
 	STA $0212
-	LDA #$80
-	STA $0213
+	LDA satrina_x ; X
+	STA $0213; X Location LEFT LEG
 
 	LDA #$80
 	STA $0214
@@ -860,14 +869,20 @@ LDA #$70
 	STA $0215
 	LDA #$01
 	STA $0216
-	LDA #$88
-	STA $0217
+	LDA satrina_x ; X
+	CLC
+	ADC #$08 ; X
+	STA $0217  ; X Location RIGHT LEG
+
+
+
 JSR AnimationPlayer
 
 forever:
   JMP forever
 .endproc
-.proc AnimationPlayer
+.proc AnimationPlayer 
+
 	PHP
 	PHA
 	TXA
@@ -884,8 +899,34 @@ forever:
 ; .byte $80, $23, $01, $88
 
 ; Middle running sprite
+; -------------- X MOVEMENT LOGIC HERE ----------------------
+	LDA satrina_x
+	STA $0203 ; X Location LEFT HEAD
 
-	
+	LDA satrina_x ; X
+	CLC
+	ADC #$08
+	STA $0207 ; X Location RIGHT HEAD
+
+	LDA satrina_x ; X
+	STA $020b ; X Location LEFT BODY
+
+	LDA satrina_x ; X
+	CLC
+	ADC #$08 ; X
+	STA $020f ; X Location RIGHT BODY
+
+	LDA satrina_x ; X
+	STA $0213; X Location LEFT LEG
+
+	LDA satrina_x ; X
+	CLC
+	ADC #$08 ; X
+	STA $0217  ; X Location RIGHT LEG
+
+
+
+
 	LDX animDelay
 	cpx #$0f  ; Delay between frames
 	beq executeAnim 
@@ -945,7 +986,55 @@ end:
 	PLA
 	PLP
 	RTS
+
+
+
 .endproc
+
+.proc update
+	PHP
+	PHA
+	TXA
+	PHA
+	TYA
+	PHA
+
+	LDA satrina_x
+	CMP #$e0
+	BCC not_right_edge
+	LDA $00
+	STA satrina_dir
+	JMP move_in_direction
+
+not_right_edge:
+	LDA satrina_x
+	CMP #$10
+	BCS move_in_direction ; if satrina_x less than $10
+	LDA #$01
+	STA satrina_dir
+
+move_in_direction:
+	LDA satrina_dir
+	CMP #$01 ; check if dir is RIGHT
+	beq move_right
+	DEC satrina_x ; move left
+	JMP exit 
+
+move_right:
+	INC satrina_x
+
+exit:
+	PLA
+	TAY
+	PLA
+	TAX
+	PLA
+	PLP
+	RTS
+.endproc
+
+
+
 .segment "VECTORS"
 .addr nmi_handler, reset_handler, irq_handler
 
@@ -975,3 +1064,5 @@ sprites:
 .segment "ZEROPAGE"
 animCount: .res 1
 animDelay: .res 1
+satrina_x: .res 1
+satrina_dir: .res 1
