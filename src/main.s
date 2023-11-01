@@ -1054,13 +1054,20 @@ check_controller:
 
 
 JumpCheck:
-	LDA pad1
-	AND #BTN_A
-	BNE jumping_pressed
-	LDA satrina_y
-	CMP #$97
-	beq	on_ground
-	JMP exit
+	LDA satrina_on_ground
+	CMP #$01
+	beq RegisterJump
+	JMP GroundCheck
+	RegisterJump:
+		LDA pad1
+		AND #BTN_A
+		BNE jumping_pressed
+		JMP exit
+	GroundCheck:
+		LDA satrina_y
+		CMP #$97
+		beq	on_ground
+		JMP exit
 
 
 
@@ -1086,9 +1093,6 @@ holding_right:
 	JMP movement
 	
 jumping_pressed:
-	LDA satrina_on_ground
-	CMP #$00
-	beq exit
 	; LDA satrina_y
 	; CLC
 	; SBC #$01
