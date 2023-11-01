@@ -831,7 +831,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$02
 	STA $0201
 	LDA #$01
-	STA $0202
+	STA $0202 ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x
 	STA $0203 ; X Location LEFT HEAD
 
@@ -840,7 +840,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$03
 	STA $0205
 	LDA #$01
-	STA $0206
+	STA $0206 ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x ; X
 	CLC
 	ADC #$08
@@ -851,7 +851,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$12
 	STA $0209
 	LDA #$01
-	STA $020a
+	STA $020a ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x ; X
 	STA $020b ; X Location LEFT BODY
 
@@ -860,7 +860,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$13
 	STA $020d
 	LDA #$01
-	STA $020e
+	STA $020e ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x ; X
 	CLC
 	ADC #$08 ; X
@@ -871,7 +871,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$24 ; LEFT FOOT RUN
 	STA $0211
 	LDA #$01
-	STA $0212
+	STA $0212 ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x ; X
 	STA $0213; X Location LEFT LEG
 
@@ -880,7 +880,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA #$23 ; RIGHT FOOT IDLE
 	STA $0215
 	LDA #$01
-	STA $0216
+	STA $0216 ; ATTRIBUTE TABLE, to FLIP, do $41	
 	LDA satrina_x ; X
 	CLC
 	ADC #$08 ; X
@@ -892,7 +892,7 @@ vblankwait:       ; wait for another vblank before continuing
 forever:
   JMP forever
 .endproc
-.proc AnimationPlayer 
+.proc AnimationPlayer ; This function is named improperly, should be renamed to Draw()
 
 	PHP
 	PHA
@@ -911,29 +911,29 @@ forever:
 
 ; Middle running sprite
 ; -------------- X MOVEMENT LOGIC HERE ----------------------
-	LDA satrina_x
-	STA $0203 ; X Location LEFT HEAD
+	; LDA satrina_x
+	; STA $0203 ; X Location LEFT HEAD
 
-	LDA satrina_x ; X
-	CLC
-	ADC #$08
-	STA $0207 ; X Location RIGHT HEAD
+	; LDA satrina_x ; X
+	; CLC
+	; ADC #$08
+	; STA $0207 ; X Location RIGHT HEAD
 
-	LDA satrina_x ; X
-	STA $020b ; X Location LEFT BODY
+	; LDA satrina_x ; X
+	; STA $020b ; X Location LEFT BODY
 
-	LDA satrina_x ; X
-	CLC
-	ADC #$08 ; X
-	STA $020f ; X Location RIGHT BODY
+	; LDA satrina_x ; X
+	; CLC
+	; ADC #$08 ; X
+	; STA $020f ; X Location RIGHT BODY
 
-	LDA satrina_x ; X
-	STA $0213; X Location LEFT LEG
+	; LDA satrina_x ; X
+	; STA $0213; X Location LEFT LEG
 
-	LDA satrina_x ; X
-	CLC
-	ADC #$08 ; X
-	STA $0217  ; X Location RIGHT LEG
+	; LDA satrina_x ; X
+	; CLC
+	; ADC #$08 ; X
+	; STA $0217  ; X Location RIGHT LEG
 ;----------------------------- y COORDINATE LOGIC ----------
 	LDA satrina_y
 	SEC
@@ -956,6 +956,98 @@ forever:
 	
 
 
+	; ---------------- DIRECTION FLIPPING ------------------------
+
+
+	LDA satrina_dir
+	CMP #$00
+	BEQ flip_left
+	CMP #$01
+	BEQ flip_right
+
+
+	flip_left: ; Gotta swap the X rendering
+		LDA satrina_x ; X
+		CLC
+		ADC #$08 ; X
+		STA $0203 ; X Location LEFT HEAD
+		LDA satrina_x
+		STA $0207 ; X Location RIGHT HEAD
+		LDA satrina_x ; X
+		CLC
+		ADC #$08 ; X
+		STA $020b ; X Location LEFT BODY
+		LDA satrina_x
+		STA $020f ; X Location RIGHT BODY
+		LDA satrina_x ; X
+		CLC
+		ADC #$08 ; X
+		STA $0213; X Location LEFT LEG
+		LDA satrina_x
+		STA $0217  ; X Location RIGHT LEG
+
+
+		LDA #$41
+		STA $0202 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0206 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $020a ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $020e ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0212 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0216 ; ATTRIBUTE TABLE, to FLIP, do $41
+		JMP pass
+	
+	flip_right:
+		LDA satrina_x
+		STA $0203 ; X Location LEFT HEAD
+
+		LDA satrina_x ; X
+		CLC
+		ADC #$08
+		STA $0207 ; X Location RIGHT HEAD
+
+		LDA satrina_x ; X
+		STA $020b ; X Location LEFT BODY
+
+		LDA satrina_x ; X
+		CLC
+		ADC #$08 ; X
+		STA $020f ; X Location RIGHT BODY
+
+		LDA satrina_x ; X
+		STA $0213; X Location LEFT LEG
+
+		LDA satrina_x ; X
+		CLC
+		ADC #$08 ; X
+		STA $0217  ; X Location RIGHT LEG
+
+
+
+		LDA #$01
+		STA $0202 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0206 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $020a ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $020e ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0212 ; ATTRIBUTE TABLE, to FLIP, do $41
+
+		STA $0216 ; ATTRIBUTE TABLE, to FLIP, do $41
+		JMP pass
+
+
+
+
+
+
+pass:
 
 
 	LDX animDelay
@@ -967,7 +1059,25 @@ forever:
 
 
 executeAnim:
+	LDA satrina_dir
+	CMP #$00
+	beq flipped
 	LDA #$01
+	STA $0202
+	STA $0206
+	STA $020a
+	STA $020e
+	LDX #$00
+	STX animDelay
+	LDX animCount
+	cpx #$00
+	beq RunFirstStage
+	cpx #$01 
+	beq RunIdleStage
+	cpx #$02
+	beq RunFinalStage
+flipped:
+	LDA #$41
 	STA $0202
 	STA $0206
 	STA $020a
@@ -1127,6 +1237,7 @@ movement:
 		JMP JumpCheck 
 
 	move_right:
+
 		INC satrina_x
 		JMP JumpCheck
 
