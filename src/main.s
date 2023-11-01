@@ -79,6 +79,8 @@ vblankwait2:
 	STA satrina_y_velocity
 	LDA #$01
 	STA satrina_on_ground
+	LDA #$01
+	STA gravity
 
 	LDA #%00000001
   	STA pad1
@@ -887,8 +889,6 @@ vblankwait:       ; wait for another vblank before continuing
 
 
 ;JSR AnimationPlayer
- LDA #$00
- STA satrina_y_velocity
 forever:
   JMP forever
 .endproc
@@ -936,6 +936,8 @@ forever:
 	STA $0217  ; X Location RIGHT LEG
 ;----------------------------- y COORDINATE LOGIC ----------
 	LDA satrina_y
+	SEC
+	SBC satrina_y_velocity
 	STA $0200
 	STA $0204
 
@@ -1059,10 +1061,10 @@ check_controller:
 	CMP #$97
 	beq	on_ground
 	; if NOT ON GROUND
-	LDA satrina_y
-	CLC
-	ADC #$01
-	STA satrina_y
+	; LDA satrina_y_velocity
+	; CLC
+	; SBC gravity
+	; STA satrina_y_velocity
 	JMP exit
 
 
@@ -1089,15 +1091,17 @@ holding_right:
 	JMP movement
 	
 jumping_pressed:
-	LDA #$00
-	STA satrina_on_ground
+	LDA satrina_on_ground
+	CMP #$00
+	beq exit
 	; LDA satrina_y
 	; CLC
 	; SBC #$01
 	; STA satrina_y
-	LDA satrina_y
-	SBC #$01
-	STA satrina_y
+	LDA #$10
+	STA satrina_y_velocity
+	LDA #$00
+	STA satrina_on_ground
 	JMP exit
 
 
@@ -1127,6 +1131,21 @@ movement:
 		INC satrina_x
 
 exit:
+
+
+	LDA satrina_y
+	SEC
+	SBC satrina_y_velocity
+	STA satrina_y
+	LDA satrina_on_ground
+	CMP #$01
+	beq Return
+	LDA satrina_y_velocity
+	SEC
+	SBC gravity
+	STA satrina_y_velocity
+
+Return:
 	PLA
 	TAY
 	PLA
