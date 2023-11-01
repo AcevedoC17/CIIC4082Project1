@@ -1053,18 +1053,13 @@ check_controller:
 
 
 
-
+JumpCheck:
 	LDA pad1
 	AND #BTN_A
 	BNE jumping_pressed
 	LDA satrina_y
 	CMP #$97
 	beq	on_ground
-	; if NOT ON GROUND
-	; LDA satrina_y_velocity
-	; CLC
-	; SBC gravity
-	; STA satrina_y_velocity
 	JMP exit
 
 
@@ -1125,10 +1120,11 @@ movement:
 		CMP #$01 ; check if dir is RIGHT
 		beq move_right
 		DEC satrina_x ; move left
-		JMP exit 
+		JMP JumpCheck 
 
 	move_right:
 		INC satrina_x
+		JMP JumpCheck
 
 exit:
 
