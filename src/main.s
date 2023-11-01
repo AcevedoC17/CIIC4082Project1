@@ -894,6 +894,9 @@ forever:
 .endproc
 .proc AnimationPlayer ; This function is named improperly, should be renamed to Draw()
 
+; TODO Jump animation, Platform collision
+
+ 
 	PHP
 	PHA
 	TXA
