@@ -814,7 +814,7 @@ vblankwait:       ; wait for another vblank before continuing
   LDA #%00011110  ; turn on screen
   STA PPUMASK
 
-	LDA #$70
+	LDA #$97 ; Y
 	STA $0200
 	LDA #$02
 	STA $0201
@@ -823,7 +823,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA satrina_x
 	STA $0203 ; X Location LEFT HEAD
 
-	LDA #$70
+	LDA #$97; Y
 	STA $0204
 	LDA #$03
 	STA $0205
@@ -834,7 +834,7 @@ vblankwait:       ; wait for another vblank before continuing
 	ADC #$08
 	STA $0207 ; X Location RIGHT HEAD
 
-	LDA #$78
+	LDA #$9f ; Y
 	STA $0208
 	LDA#$12
 	STA $0209
@@ -843,7 +843,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA satrina_x ; X
 	STA $020b ; X Location LEFT BODY
 
-	LDA #$78
+	LDA #$9f ; Y
 	STA $020c
 	LDA #$13
 	STA $020d
@@ -854,7 +854,7 @@ vblankwait:       ; wait for another vblank before continuing
 	ADC #$08 ; X
 	STA $020f ; X Location RIGHT BODY
 
-	LDA #$80
+	LDA #$a7; Y
 	STA $0210
 	LDA #$24 ; LEFT FOOT RUN
 	STA $0211
@@ -863,7 +863,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA satrina_x ; X
 	STA $0213; X Location LEFT LEG
 
-	LDA #$80
+	LDA #$a7 ; Y
 	STA $0214
 	LDA #$23 ; RIGHT FOOT IDLE
 	STA $0215
@@ -1008,7 +1008,7 @@ end:
 
 not_right_edge:
 	LDA satrina_x
-	CMP #$10
+	CMP #$08
 	BCS move_in_direction ; if satrina_x less than $10
 	LDA #$01
 	STA satrina_dir
