@@ -73,6 +73,16 @@ vblankwait2:
 	STA satrina_x
 	LDA #$01
 	STA satrina_dir
+	LDA #$97
+	STA satrina_y
+	LDA #$00
+	STA satrina_y_velocity
+	LDA #$01
+	STA satrina_on_ground
+
+	LDA #%00000001
+  	STA pad1
+	;LDA #$10
 
   ; write a palette
   LDX PPUSTATUS
@@ -814,7 +824,7 @@ vblankwait:       ; wait for another vblank before continuing
   LDA #%00011110  ; turn on screen
   STA PPUMASK
 
-	LDA #$97 ; Y
+	LDA satrina_y ; Y default: #$97
 	STA $0200
 	LDA #$02
 	STA $0201
@@ -823,7 +833,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA satrina_x
 	STA $0203 ; X Location LEFT HEAD
 
-	LDA #$97; Y
+	LDA satrina_y; Y default #$97
 	STA $0204
 	LDA #$03
 	STA $0205
@@ -834,16 +844,16 @@ vblankwait:       ; wait for another vblank before continuing
 	ADC #$08
 	STA $0207 ; X Location RIGHT HEAD
 
-	LDA #$9f ; Y
+	LDA satrina_y ; Y default #$9f
 	STA $0208
-	LDA#$12
+	LDA #$12
 	STA $0209
 	LDA #$01
 	STA $020a
 	LDA satrina_x ; X
 	STA $020b ; X Location LEFT BODY
 
-	LDA #$9f ; Y
+	LDA satrina_y; Y default #$9f
 	STA $020c
 	LDA #$13
 	STA $020d
@@ -854,7 +864,7 @@ vblankwait:       ; wait for another vblank before continuing
 	ADC #$08 ; X
 	STA $020f ; X Location RIGHT BODY
 
-	LDA #$a7; Y
+	LDA satrina_y; Y default #$a7
 	STA $0210
 	LDA #$24 ; LEFT FOOT RUN
 	STA $0211
@@ -863,7 +873,7 @@ vblankwait:       ; wait for another vblank before continuing
 	LDA satrina_x ; X
 	STA $0213; X Location LEFT LEG
 
-	LDA #$a7 ; Y
+	LDA satrina_y ; Y default #$a7
 	STA $0214
 	LDA #$23 ; RIGHT FOOT IDLE
 	STA $0215
@@ -876,8 +886,9 @@ vblankwait:       ; wait for another vblank before continuing
 
 
 
-JSR AnimationPlayer
-
+;JSR AnimationPlayer
+ LDA #$00
+ STA satrina_y_velocity
 forever:
   JMP forever
 .endproc
@@ -923,6 +934,24 @@ forever:
 	CLC
 	ADC #$08 ; X
 	STA $0217  ; X Location RIGHT LEG
+;----------------------------- y COORDINATE LOGIC ----------
+	LDA satrina_y
+	STA $0200
+	STA $0204
+
+
+
+	CLC
+	ADC #$08
+	STA $0208
+	STA $020c
+
+
+	CLC
+	ADC #$08
+	STA $0210
+	STA $0214
+	
 
 
 
@@ -999,6 +1028,80 @@ end:
 	TYA
 	PHA
 
+	; Will grab current controller state:
+	LDA #$01
+	STA CONTROLLER1
+	LDA #$00
+	STA CONTROLLER1
+	LDA #%00000001 ; Clear last state
+  	STA pad1
+	get_controller_state:
+		LDA CONTROLLER1
+		LSR A
+		ROL pad1
+		BCC get_controller_state
+
+check_controller:
+	LDA pad1
+	AND #BTN_RIGHT
+	bne holding_right
+	LDA pad1
+	AND #BTN_LEFT
+	BNE holding_left
+
+
+
+
+	LDA pad1
+	AND #BTN_A
+	BNE jumping_pressed
+	LDA satrina_y
+	CMP #$97
+	beq	on_ground
+	; if NOT ON GROUND
+	LDA satrina_y
+	CLC
+	ADC #$01
+	STA satrina_y
+	JMP exit
+
+
+
+on_ground:
+	LDA #$00
+	STA satrina_y_velocity
+	LDA #$01
+	STA satrina_on_ground
+	JMP exit
+
+
+
+holding_left:
+	LDA #$00
+	STA satrina_dir
+	JMP movement
+
+
+
+holding_right:
+	LDA #$01
+	STA satrina_dir
+	JMP movement
+	
+jumping_pressed:
+	LDA #$00
+	STA satrina_on_ground
+	; LDA satrina_y
+	; CLC
+	; SBC #$01
+	; STA satrina_y
+	LDA satrina_y
+	SBC #$01
+	STA satrina_y
+	JMP exit
+
+
+movement:
 	LDA satrina_x
 	CMP #$e0
 	BCC not_right_edge
@@ -1006,22 +1109,22 @@ end:
 	STA satrina_dir
 	JMP move_in_direction
 
-not_right_edge:
-	LDA satrina_x
-	CMP #$08
-	BCS move_in_direction ; if satrina_x less than $10
-	LDA #$01
-	STA satrina_dir
+	not_right_edge:
+		LDA satrina_x
+		CMP #$08
+		BCS move_in_direction ; if satrina_x less than $10
+		LDA #$01
+		STA satrina_dir
 
-move_in_direction:
-	LDA satrina_dir
-	CMP #$01 ; check if dir is RIGHT
-	beq move_right
-	DEC satrina_x ; move left
-	JMP exit 
+	move_in_direction:
+		LDA satrina_dir
+		CMP #$01 ; check if dir is RIGHT
+		beq move_right
+		DEC satrina_x ; move left
+		JMP exit 
 
-move_right:
-	INC satrina_x
+	move_right:
+		INC satrina_x
 
 exit:
 	PLA
@@ -1065,4 +1168,9 @@ sprites:
 animCount: .res 1
 animDelay: .res 1
 satrina_x: .res 1
+satrina_y: .res 1
 satrina_dir: .res 1
+pad1: .res 1
+gravity: .res 1
+satrina_on_ground: .res 1
+satrina_y_velocity: .res 1
