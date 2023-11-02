@@ -1005,7 +1005,7 @@ forever:
 		STA $0212 ; ATTRIBUTE TABLE, to FLIP, do $41
 
 		STA $0216 ; ATTRIBUTE TABLE, to FLIP, do $41
-		JMP pass
+		JMP JumpRenderCheck
 	
 	flip_right:
 		LDA satrina_x
@@ -1046,11 +1046,19 @@ forever:
 		STA $0212 ; ATTRIBUTE TABLE, to FLIP, do $41
 
 		STA $0216 ; ATTRIBUTE TABLE, to FLIP, do $41
-		JMP pass
 
+JumpRenderCheck:
+	LDA satrina_on_ground
+	CMP #$00
+	BEQ RenderJump
+	JMP pass
 
-
-
+RenderJump:
+	LDA #$24
+	STA $0211
+	LDA #$25
+	STA $0215
+	JMP endRender
 
 
 pass:
@@ -1061,7 +1069,7 @@ pass:
 	beq executeAnim 
 	INX
 	STX animDelay
-	jmp end
+	jmp endRender
 
 
 executeAnim:
@@ -1106,7 +1114,7 @@ RunFirstStage:
 	STA $0215
 	LDX #$01
 	STX animCount
-	JMP end
+	JMP endRender
 
 RunIdleStage:
 	LDA #$22
@@ -1115,7 +1123,7 @@ RunIdleStage:
 	STA $0215
 	LDX #$02
 	STX animCount
-	JMP end
+	JMP endRender
 	
 RunFinalStage:
 	LDA #$22
@@ -1124,8 +1132,8 @@ RunFinalStage:
 	STA $0215
 	LDX #$00
 	STX animCount
-	JMP end
-end:
+	JMP endRender
+endRender:
 	PLA
 	TAY
 	PLA
