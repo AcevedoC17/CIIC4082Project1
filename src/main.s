@@ -1230,8 +1230,11 @@ jumping_pressed:
 
 movement:
 	LDA satrina_x
-	CMP #$28 ; Platform initial wall
-	BEQ PlatformCheck
+	CMP #$2d ; Platform initial wall
+	BEQ PlatformCheckRight
+	LDA satrina_x
+	CMP #$bf
+	BEQ PlatformCheckLeft
 	LDA satrina_x
 	CMP #$e0
 	BCC not_right_edge
@@ -1254,11 +1257,11 @@ movement:
 		JMP JumpCheck 
 
 	move_right:
-
+		
 		INC satrina_x
 		JMP JumpCheck
 
-	PlatformCheck:
+	PlatformCheckRight:
 		LDA satrina_y
 		CMP #$8f
 		BCC move_in_direction
@@ -1266,6 +1269,14 @@ movement:
 		STA satrina_dir
 		JMP move_in_direction
 
+
+	PlatformCheckLeft:
+		LDA satrina_y
+		CMP #$8f
+		BCC move_in_direction
+		LDA #$01
+		STA satrina_dir
+		JMP move_in_direction
 
 exit:
 
