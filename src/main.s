@@ -1188,9 +1188,28 @@ JumpCheck:
 		BNE jumping_pressed
 		JMP exit
 	GroundCheck:
+		LDA satrina_x
+		CMP #$2d 
+		BCS PlatformGroundCheck ; Greater or equal to #$2d
 		LDA satrina_y
 		CMP #$97
 		beq	on_ground
+		JMP exit
+
+	PlatformGroundCheck:
+		LDA satrina_x
+		CMP #$bf ; Less or equal to #$bf
+		BCC PlatformSetGround
+		BEQ PlatformSetGround
+		LDA satrina_y
+		CMP #$97
+		beq on_ground
+		JMP exit
+		
+	PlatformSetGround:
+		LDA satrina_y
+		CMP #$87
+		beq on_ground
 		JMP exit
 
 
@@ -1233,7 +1252,7 @@ movement:
 	CMP #$2d ; Platform initial wall
 	BEQ PlatformCheckRight
 	LDA satrina_x
-	CMP #$bf
+	CMP #$bf ; Platform final wall
 	BEQ PlatformCheckLeft
 	LDA satrina_x
 	CMP #$e0
