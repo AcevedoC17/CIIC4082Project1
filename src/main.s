@@ -83,6 +83,8 @@ vblankwait2:
 	STA gravity
 	LDA #$00
 	STA currently_in_x_range
+	LDA #$00
+	STA ProperGroundFix
 
 	LDA #%00000001
   	STA pad1
@@ -1316,11 +1318,35 @@ exit:
 	STA satrina_y
 	LDA satrina_on_ground
 	CMP #$01
-	beq Return
+	beq GroundFixCheck
 	LDA satrina_y_velocity
 	SEC
 	SBC gravity
 	STA satrina_y_velocity
+
+	
+	LDA satrina_on_ground
+	CMP #$01
+	BEQ GroundFixCheck
+	JMP Return
+GroundFixCheck:
+	LDA currently_in_x_range
+	CMP #$00
+	BEQ GroundFixFinalCheck
+	JMP Return
+GroundFixFinalCheck:
+	LDA satrina_y
+	CMP #$9c
+	BEQ GroundFix
+	JMP Return
+GroundFix:
+	LDA #$01
+	STA ProperGroundFix
+	LDA #$97
+	STA satrina_y
+	JMP Return
+	
+
 
 Return:
 	PLA
@@ -1371,3 +1397,4 @@ gravity: .res 1
 satrina_on_ground: .res 1
 satrina_y_velocity: .res 1
 currently_in_x_range: .res 1
+ProperGroundFix: .res 1
