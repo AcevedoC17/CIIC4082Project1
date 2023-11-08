@@ -85,6 +85,10 @@ vblankwait2:
 	STA currently_in_x_range
 	LDA #$00
 	STA ProperGroundFix
+	LDA #$00
+	STA LockLeft
+	LDA #$00
+	STA LockRight
 
 	LDA #%00000001
   	STA pad1
@@ -1236,19 +1240,25 @@ on_ground:
 	STA satrina_on_ground
 	JMP exit
 
-
+holding_right:
+	LDA #$01
+	STA satrina_dir
+	LDA LockRight
+	CMP #$00
+	BEQ movement
+	JMP exit
 
 holding_left:
 	LDA #$00
 	STA satrina_dir
-	JMP movement
+	LDA LockLeft
+	CMP #$00
+	BEQ movement
+	JMP exit
 
 
 
-holding_right:
-	LDA #$01
-	STA satrina_dir
-	JMP movement
+
 	
 jumping_pressed:
 	; LDA satrina_y
@@ -1272,8 +1282,10 @@ movement:
 	LDA satrina_x
 	CMP #$e0
 	BCC not_right_edge
-	LDA $00
-	STA satrina_dir
+	LDA $01
+	STA LockRight
+	LDA #$00
+	STA LockLeft
 	JMP move_in_direction
 
 	not_right_edge:
@@ -1281,18 +1293,23 @@ movement:
 		CMP #$08
 		BCS move_in_direction ; if satrina_x less than $10
 		LDA #$01
-		STA satrina_dir
+		STA LockLeft
+		LDA #$00
+		STA LockRight
 
 	move_in_direction:
 		LDA satrina_dir
 		CMP #$01 ; check if dir is RIGHT
 		beq move_right
-		DEC satrina_x ; move left
+		DEC satrina_x
+		LDA #$00
+		STA LockRight ; move left
 		JMP JumpCheck 
 
 	move_right:
-		
 		INC satrina_x
+		LDA #$00
+		STA LockLeft
 		JMP JumpCheck
 
 	PlatformCheckRight:
@@ -1311,7 +1328,6 @@ movement:
 		LDA #$01
 		STA satrina_dir
 		JMP move_in_direction
-
 exit:
 
 	LDA satrina_y
@@ -1400,3 +1416,5 @@ satrina_on_ground: .res 1
 satrina_y_velocity: .res 1
 currently_in_x_range: .res 1
 ProperGroundFix: .res 1
+LockRight: .res 1
+LockLeft: .res 1

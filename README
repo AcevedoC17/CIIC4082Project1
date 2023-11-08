@@ -15,6 +15,6 @@ Bugs:
     When colliding with the edge of the screen, Satrina jitters. NOTE: This jitter is cause by the forced flip at the edge. Will be removed next commit.
 
 
-    TODO:
-    Jump animation
-    PLatform collision
+TODO:
+Project Part 2
+Bugs in Bugs section
