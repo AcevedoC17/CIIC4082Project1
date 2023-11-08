@@ -1214,6 +1214,8 @@ JumpCheck:
 		LDA satrina_y
 		CMP #$97
 		bcs on_ground
+		LDA #$00
+		STA satrina_on_ground
 		JMP exit
 		
 	PlatformSetGround: ; IN RANGE OF PLATFORM, NEW GROUND IS $87
