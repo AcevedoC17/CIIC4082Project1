@@ -10,11 +10,4 @@ FCEUX bug known: If booted in new PPU mode, it will not work. FCEUX must be boot
 
 
 Bugs:
-    When Satrina reaches the right side of the screen, she is flipped to move to the left. Known fix.
     When jumping, Satrina briefly clips through the floor.
-    When colliding with the edge of the screen, Satrina jitters. NOTE: This jitter is cause by the forced flip at the edge. Will be removed next commit.
-
-
-TODO:
-Project Part 2
-Bugs in Bugs section
