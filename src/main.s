@@ -1255,7 +1255,7 @@ jumping_pressed:
 	; CLC
 	; SBC #$01
 	; STA satrina_y
-	LDA #$10
+	LDA #$0f
 	STA satrina_y_velocity
 	LDA #$00
 	STA satrina_on_ground
@@ -1338,8 +1338,8 @@ GroundFixCheck:
 	JMP Return
 GroundFixFinalCheck:
 	LDA satrina_y
-	CMP #$9c
-	BEQ GroundFix
+	CMP #$98
+	BCS GroundFix
 	JMP Return
 GroundFix:
 	LDA #$01
