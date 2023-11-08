@@ -1,5 +1,5 @@
 
-11
+13
 00000	0000	b	s	0	AnimCount
 00001	0001	b	s	0	AnimDelay
 00002	0002	b	s	0	satrina_x
@@ -11,3 +11,5 @@
 00008	0008	b	s	0	satrina_y_velocity
 00009	0009	b	s	0	currently_in_x_range
 0000A	000A	b	s	0	ProperGroundFix
+0000B	000B	b	s	0	LockRight
+0000C	000C	b	s	0	LockLeft
