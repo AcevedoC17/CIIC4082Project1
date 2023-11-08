@@ -1193,11 +1193,13 @@ JumpCheck:
 		LDA satrina_x
 		CMP #$3e 
 		BCS PlatformGroundCheck ; Greater or equal to #$3e
-		LDA #$00
+		LDA #$00 ; NOT IN RANGE OF PLATFORM, GROUND IS $97
 		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$97
-		beq	on_ground
+		bcs	on_ground
+		LDA #$00
+		STA satrina_on_ground
 		JMP exit
 
 	PlatformGroundCheck:
@@ -1205,25 +1207,25 @@ JumpCheck:
 		CMP #$b3 ; Less or equal to #$bf -77
 		BCC PlatformSetGround 
 		BEQ PlatformSetGround
-		LDA #$00
+		LDA #$00 ; NOT IN RANGE OF PLATFORM, GROUND IS $97
 		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$97
-		beq on_ground
+		bcs on_ground
 		JMP exit
 		
-	PlatformSetGround:
+	PlatformSetGround: ; IN RANGE OF PLATFORM, NEW GROUND IS $87
 		LDA #$01
 		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$87
 		beq on_ground
+		bcs on_ground
 		JMP exit
 
 
 
 on_ground:
-	LDA #$00
 	LDA #$00
 	STA satrina_y_velocity
 	LDA #$01
@@ -1307,7 +1309,6 @@ movement:
 		JMP move_in_direction
 
 exit:
-
 
 	LDA satrina_y
 	SEC
