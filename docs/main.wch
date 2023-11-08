@@ -1,0 +1,13 @@
+
+11
+00000	0000	b	s	0	AnimCount
+00001	0001	b	s	0	AnimDelay
+00002	0002	b	s	0	satrina_x
+00003	0003	b	h	0	satrina_y
+00004	0004	b	s	0	satrina_dir
+00005	0005	b	s	0	pad1
+00006	0006	b	s	0	gravity
+00007	0007	b	s	0	satrina_on_ground
+00008	0008	b	s	0	satrina_y_velocity
+00009	0009	b	s	0	currently_in_x_range
+0000A	000A	b	s	0	ProperGroundFix
