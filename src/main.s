@@ -1226,7 +1226,7 @@ JumpCheck:
 		LDA #$01
 		STA currently_in_x_range
 		LDA satrina_y
-		CMP #$87
+		CMP #$83
 		beq on_ground
 		bcs on_ground
 		JMP exit
@@ -1246,7 +1246,7 @@ holding_right:
 	LDA LockRight
 	CMP #$00
 	BEQ movement
-	JMP exit
+	JMP JumpCheck
 
 holding_left:
 	LDA #$00
@@ -1254,7 +1254,7 @@ holding_left:
 	LDA LockLeft
 	CMP #$00
 	BEQ movement
-	JMP exit
+	JMP JumpCheck
 
 
 
@@ -1316,8 +1316,8 @@ movement:
 		LDA satrina_y
 		CMP #$8f
 		BCC move_in_direction
-		LDA #$00
-		STA satrina_dir
+		LDA #$01
+		STA LockRight
 		JMP move_in_direction
 
 
@@ -1326,7 +1326,7 @@ movement:
 		CMP #$8f
 		BCC move_in_direction
 		LDA #$01
-		STA satrina_dir
+		STA LockLeft
 		JMP move_in_direction
 exit:
 
