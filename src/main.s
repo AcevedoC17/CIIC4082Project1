@@ -81,6 +81,8 @@ vblankwait2:
 	STA satrina_on_ground
 	LDA #$01
 	STA gravity
+	LDA #$00
+	STA currently_in_x_range
 
 	LDA #%00000001
   	STA pad1
@@ -1186,27 +1188,33 @@ JumpCheck:
 		LDA pad1
 		AND #BTN_A
 		BNE jumping_pressed
-		JMP exit
+		JMP GroundCheck
 	GroundCheck:
 		LDA satrina_x
-		CMP #$2d 
-		BCS PlatformGroundCheck ; Greater or equal to #$2d
+		CMP #$3e 
+		BCS PlatformGroundCheck ; Greater or equal to #$3e
+		LDA #$00
+		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$97
 		beq	on_ground
 		JMP exit
 
 	PlatformGroundCheck:
-		LDA satrina_x
-		CMP #$bf ; Less or equal to #$bf
-		BCC PlatformSetGround
+		LDA satrina_x 
+		CMP #$b3 ; Less or equal to #$bf -77
+		BCC PlatformSetGround 
 		BEQ PlatformSetGround
+		LDA #$00
+		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$97
 		beq on_ground
 		JMP exit
 		
 	PlatformSetGround:
+		LDA #$01
+		STA currently_in_x_range
 		LDA satrina_y
 		CMP #$87
 		beq on_ground
@@ -1215,6 +1223,7 @@ JumpCheck:
 
 
 on_ground:
+	LDA #$00
 	LDA #$00
 	STA satrina_y_velocity
 	LDA #$01
@@ -1360,3 +1369,4 @@ pad1: .res 1
 gravity: .res 1
 satrina_on_ground: .res 1
 satrina_y_velocity: .res 1
+currently_in_x_range: .res 1
