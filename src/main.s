@@ -1286,7 +1286,7 @@ movement:
 	STA LockRight
 	LDA #$00
 	STA LockLeft
-	JMP move_in_direction
+	JMP move_in_direction 	 	
 
 	not_right_edge:
 		LDA satrina_x
