@@ -89,6 +89,8 @@ vblankwait2:
 	STA LockLeft
 	LDA #$00
 	STA LockRight
+	LDA #$00
+	STA attack_render
 
 	LDA #%00000001
   	STA pad1
@@ -916,13 +918,13 @@ forever:
 	PHA
 	
 
-; .byte $70, $02, $01, $80 ; Satrina body (middle running sprite)
-; .byte $70, $03, $01, $88
-; .byte $78, $12, $01, $80
-; .byte $78, $13, $01, $88 
-; .byte $80, $22, $01, $80
-; .byte $80, $23, $01, $88
-
+; .byte $70, $02, $01, $80 ; Satrina body (middle running sprite) 0200
+; .byte $70, $03, $01, $88 0204
+; .byte $78, $12, $01, $80 0208
+; .byte $78, $13, $01, $88 020c
+; .byte $80, $22, $01, $80 0210
+; .byte $80, $23, $01, $88 0214
+	; 0
 ; Middle running sprite
 ; -------------- X MOVEMENT LOGIC HERE ----------------------
 	; LDA satrina_x
@@ -948,6 +950,20 @@ forever:
 	; CLC
 	; ADC #$08 ; X
 	; STA $0217  ; X Location RIGHT LEG
+
+	LDA pad1
+	AND #BTN_B
+	BNE SetRenderAttack
+	LDA #$00
+	STA attack_render
+	JMP YLogic
+SetRenderAttack:
+	LDA #$01
+	STA attack_render
+
+
+
+YLogic:
 ;----------------------------- y COORDINATE LOGIC ----------
 	LDA satrina_y
 	SEC
@@ -1142,6 +1158,52 @@ RunFinalStage:
 	STX animCount
 	JMP endRender
 endRender:
+	LDA attack_render
+	CMP #$01
+	BEQ renderAttack
+	LDA #$47
+	STA $0219
+	JMP RenderReturn
+	; PLA
+	; TAY
+	; PLA
+	; TAX
+	; PLA
+	; PLP
+	; RTS
+renderAttack:
+	LDA satrina_dir
+	CMP #$00
+	BEQ FlipAttack
+	LDA satrina_y
+	CLC
+	ADC #$08 
+	STA $0218
+	LDA #$08
+	STA $0219
+	LDA #$01
+	STA $021a
+	LDA satrina_x
+	CLC
+	ADC #$0f
+	STA $021b
+	JMP RenderReturn
+
+FlipAttack:
+	LDA satrina_y
+	CLC
+	ADC #$08 
+	STA $0218
+	LDA #$08
+	STA $0219
+	LDA #$41
+	STA $021a
+	LDA satrina_x
+	SEC
+	SBC #$07
+	STA $021b
+
+RenderReturn:
 	PLA
 	TAY
 	PLA
@@ -1149,9 +1211,6 @@ endRender:
 	PLA
 	PLP
 	RTS
-
-
-
 .endproc
 
 .proc update
@@ -1175,6 +1234,7 @@ endRender:
 		ROL pad1
 		BCC get_controller_state
 
+
 check_controller:
 	LDA pad1
 	AND #BTN_RIGHT
@@ -1182,8 +1242,6 @@ check_controller:
 	LDA pad1
 	AND #BTN_LEFT
 	BNE holding_left
-
-
 
 JumpCheck:
 	LDA satrina_on_ground
@@ -1279,9 +1337,11 @@ movement:
 	LDA satrina_x
 	CMP #$bf ; Platform final wall
 	BEQ PlatformCheckLeft
-	LDA satrina_x
-	CMP #$e0
+	LDA satrina_x 
+	CMP #$e7
 	BCC not_right_edge
+	LDA #$00
+	STA NOTATRIGHTEDGE
 	LDA $01
 	STA LockRight
 	LDA #$00
@@ -1289,6 +1349,8 @@ movement:
 	JMP move_in_direction 	 	
 
 	not_right_edge:
+		LDA #$01
+		STA NOTATRIGHTEDGE
 		LDA satrina_x
 		CMP #$08
 		BCS move_in_direction ; if satrina_x less than $10
@@ -1307,6 +1369,9 @@ movement:
 		JMP JumpCheck 
 
 	move_right:
+		LDA NOTATRIGHTEDGE
+		CMP #$00
+		BEQ exit
 		INC satrina_x
 		LDA #$00
 		STA LockLeft
@@ -1386,7 +1451,7 @@ palettes:
 .byte $0f, $30, $15, $2a
 .byte $0f, $2a, $17, $38
 .byte $0f, $0c, $07, $13
-.byte $0f, $19, $09, $29
+.byte $0f, $0f, $0f, $0f
 
 .byte $0f, $30, $15, $2a
 .byte $0f, $24, $11, $30
@@ -1405,16 +1470,18 @@ sprites:
 
 
 .segment "ZEROPAGE"
-animCount: .res 1
-animDelay: .res 1
-satrina_x: .res 1
-satrina_y: .res 1
-satrina_dir: .res 1
-pad1: .res 1
-gravity: .res 1
-satrina_on_ground: .res 1
-satrina_y_velocity: .res 1
-currently_in_x_range: .res 1
-ProperGroundFix: .res 1
-LockRight: .res 1
-LockLeft: .res 1
+animCount: .res 1 ; 1
+animDelay: .res 1 ; 2
+satrina_x: .res 1 ; 3
+satrina_y: .res 1 ; 4
+satrina_dir: .res 1 ; 5
+pad1: .res 1 ; 6
+gravity: .res 1 ; 7
+satrina_on_ground: .res 1 ; 8 
+satrina_y_velocity: .res 1 ; 9 
+currently_in_x_range: .res 1 ; a
+ProperGroundFix: .res 1 ; b
+LockRight: .res 1 ; c
+LockLeft: .res 1 ; d
+attack_render: .res 1  ; e
+NOTATRIGHTEDGE: .res 1 ; f
